@@ -3,7 +3,13 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install dependencies
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -11,4 +17,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 
 # Run the application with Uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

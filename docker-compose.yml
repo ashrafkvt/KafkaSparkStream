@@ -26,9 +26,8 @@ services:
       
       # Required for KRaft mode
       KAFKA_CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
-      
-      # Enable KRaft mode
       KAFKA_KRAFT_CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'  # Add this line
     volumes:
       - kafka-data:/var/lib/kafka/data
     healthcheck:
@@ -122,30 +121,6 @@ services:
     networks:
       - pipeline-network
 
-  # Prometheus for monitoring
-  prometheus:
-    image: prom/prometheus:v2.45.0
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - pipeline-network
-
-  # Grafana for visualization
-  grafana:
-    image: grafana/grafana:10.0.0
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana-data:/var/lib/grafana
-    networks:
-      - pipeline-network
 
   # API service to expose data (FastAPI)
   api-service:
@@ -155,12 +130,37 @@ services:
       - postgres
       - redis
     ports:
-      - "5000:5000"
+      - "8000:8000"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/dataengineering
       REDIS_URL: redis://redis:6379
     networks:
       - pipeline-network
+
+  # # Prometheus for monitoring
+  # prometheus:
+  #   image: prom/prometheus:v2.45.0
+  #   container_name: prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - pipeline-network
+
+  # # Grafana for visualization
+  # grafana:
+  #   image: grafana/grafana:10.0.0
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #   networks:
+  #     - pipeline-network
 
 networks:
   pipeline-network:
@@ -169,4 +169,4 @@ networks:
 volumes:
   kafka-data:
   postgres-data:
-  grafana-data:
+  # grafana-data:
