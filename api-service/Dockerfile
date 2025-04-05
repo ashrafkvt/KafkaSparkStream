@@ -1,13 +1,10 @@
 # api-service/Dockerfile
-FROM python:3.10-slim
+FROM python:3.10-alpine
 
 WORKDIR /app
 
-# Install necessary packages
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install necessary packages including PostgreSQL client
+RUN apk add --no-cache postgresql-dev gcc python3-dev musl-dev
 
 # Install Python dependencies
 COPY requirements.txt .
